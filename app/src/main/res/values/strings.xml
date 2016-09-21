@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">My App</string>
+    <string name="edit_message">Enter a message</string>
+    <string name="button_send">Send</string>
+
+    <string name="brewers_page_title">Brewers</string>
+    <string name="beverages_page_title">Beverages</string>
+</resources>
