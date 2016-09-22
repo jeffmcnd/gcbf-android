@@ -9,13 +9,15 @@ public class Beverage implements Parcelable {
     public final String blurb;
     public final String imageurl;
     public final int brewer_id;
+    public final int count;
 
-    public Beverage(int id, String name, String blurb, String imageurl, int brewer_id) {
+    public Beverage(int id, String name, String blurb, String imageurl, int brewer_id, int count) {
         this.id = id;
         this.name = name;
         this.blurb = blurb;
         this.imageurl = imageurl;
         this.brewer_id = brewer_id;
+        this.count = count;
     }
 
     @Override
@@ -29,6 +31,7 @@ public class Beverage implements Parcelable {
         blurb = in.readString();
         imageurl = in.readString();
         brewer_id = in.readInt();
+        count = in.readInt();
     }
 
     @Override
@@ -43,6 +46,7 @@ public class Beverage implements Parcelable {
         dest.writeString(blurb);
         dest.writeString(imageurl);
         dest.writeInt(brewer_id);
+        dest.writeInt(count);
     }
 
     @SuppressWarnings("unused")
