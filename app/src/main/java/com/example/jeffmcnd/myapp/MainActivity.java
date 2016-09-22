@@ -1,6 +1,9 @@
 package com.example.jeffmcnd.myapp;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -8,10 +11,14 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 
+import com.example.jeffmcnd.myapp.activity.BrewerActivity;
 import com.example.jeffmcnd.myapp.fragments.BeverageFragment;
 import com.example.jeffmcnd.myapp.fragments.BrewerFragment;
 import com.example.jeffmcnd.myapp.models.Beverage;
 import com.example.jeffmcnd.myapp.models.Brewer;
+import com.f2prateek.dart.Dart;
+import com.f2prateek.dart.HensonNavigable;
+
 
 public class MainActivity
         extends FragmentActivity
@@ -36,7 +43,9 @@ public class MainActivity
 
     @Override
     public void onListFragmentInteraction(Brewer brewer) {
-
+        Intent intent = new Intent(this, BrewerActivity.class);
+        intent.putExtra("brewer", brewer);
+        startActivity(intent);
     }
 
     @Override

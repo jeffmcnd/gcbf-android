@@ -1,6 +1,9 @@
 package com.example.jeffmcnd.myapp.models;
 
-public class Beverage {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class Beverage implements Parcelable {
     public final int id;
     public final String name;
     public final String blurb;
@@ -19,4 +22,39 @@ public class Beverage {
     public String toString() {
         return name;
     }
+
+    protected Beverage(Parcel in) {
+        id = in.readInt();
+        name = in.readString();
+        blurb = in.readString();
+        imageurl = in.readString();
+        brewer_id = in.readInt();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(id);
+        dest.writeString(name);
+        dest.writeString(blurb);
+        dest.writeString(imageurl);
+        dest.writeInt(brewer_id);
+    }
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<Beverage> CREATOR = new Parcelable.Creator<Beverage>() {
+        @Override
+        public Beverage createFromParcel(Parcel in) {
+            return new Beverage(in);
+        }
+
+        @Override
+        public Beverage[] newArray(int size) {
+            return new Beverage[size];
+        }
+    };
 }
