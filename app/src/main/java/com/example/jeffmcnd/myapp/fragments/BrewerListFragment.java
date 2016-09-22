@@ -24,7 +24,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.moshi.MoshiConverterFactory;
 
-public class BrewerFragment extends Fragment {
+public class BrewerListFragment extends Fragment {
 
     // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
@@ -32,12 +32,12 @@ public class BrewerFragment extends Fragment {
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
 
-    public BrewerFragment() {
+    public BrewerListFragment() {
     }
 
     @SuppressWarnings("unused")
-    public static BrewerFragment newInstance(int columnCount) {
-        BrewerFragment fragment = new BrewerFragment();
+    public static BrewerListFragment newInstance(int columnCount) {
+        BrewerListFragment fragment = new BrewerListFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_COLUMN_COUNT, columnCount);
         fragment.setArguments(args);

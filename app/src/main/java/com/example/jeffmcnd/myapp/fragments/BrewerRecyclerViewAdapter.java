@@ -1,6 +1,5 @@
 package com.example.jeffmcnd.myapp.fragments;
 
-import android.support.v4.text.TextUtilsCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -10,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.jeffmcnd.myapp.R;
-import com.example.jeffmcnd.myapp.fragments.BrewerFragment.OnListFragmentInteractionListener;
+import com.example.jeffmcnd.myapp.fragments.BrewerListFragment.OnListFragmentInteractionListener;
 import com.example.jeffmcnd.myapp.models.Brewer;
 import com.squareup.picasso.Picasso;
 
@@ -29,7 +28,7 @@ public class BrewerRecyclerViewAdapter extends RecyclerView.Adapter<BrewerRecycl
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.fragment_brewer, parent, false);
+                .inflate(R.layout.fragment_brewer_item, parent, false);
         return new ViewHolder(view);
     }
 

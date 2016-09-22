@@ -13,7 +13,6 @@ import android.view.ViewGroup;
 
 import com.example.jeffmcnd.myapp.GcbfService;
 import com.example.jeffmcnd.myapp.R;
-import com.example.jeffmcnd.myapp.fragments.dummy.DummyContent;
 import com.example.jeffmcnd.myapp.models.Beverage;
 
 import java.util.ArrayList;
@@ -25,17 +24,17 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.moshi.MoshiConverterFactory;
 
-public class FavoriteFragment extends Fragment {
+public class FavoriteListFragment extends Fragment {
 
     private static final String ARG_COLUMN_COUNT = "column-count";
     private int mColumnCount = 1;
     private OnFavoriteListItemClicked mListener;
 
-    public FavoriteFragment() {
+    public FavoriteListFragment() {
     }
 
-    public static FavoriteFragment newInstance(int columnCount) {
-        FavoriteFragment fragment = new FavoriteFragment();
+    public static FavoriteListFragment newInstance(int columnCount) {
+        FavoriteListFragment fragment = new FavoriteListFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_COLUMN_COUNT, columnCount);
         fragment.setArguments(args);

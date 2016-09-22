@@ -17,9 +17,9 @@ import butterknife.ButterKnife;
 public class FavoriteRecyclerViewAdapter extends RecyclerView.Adapter<FavoriteRecyclerViewAdapter.ViewHolder> {
 
     private final List<Beverage> beverages;
-    private final FavoriteFragment.OnFavoriteListItemClicked listener;
+    private final FavoriteListFragment.OnFavoriteListItemClicked listener;
 
-    public FavoriteRecyclerViewAdapter(List<Beverage> items, FavoriteFragment.OnFavoriteListItemClicked listener) {
+    public FavoriteRecyclerViewAdapter(List<Beverage> items, FavoriteListFragment.OnFavoriteListItemClicked listener) {
         beverages = items;
         this.listener = listener;
     }

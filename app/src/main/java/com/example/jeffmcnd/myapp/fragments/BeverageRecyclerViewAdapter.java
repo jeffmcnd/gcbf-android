@@ -8,7 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.jeffmcnd.myapp.R;
-import com.example.jeffmcnd.myapp.fragments.BeverageFragment.OnListFragmentInteractionListener;
+import com.example.jeffmcnd.myapp.fragments.BeverageListFragment.OnListFragmentInteractionListener;
 import com.example.jeffmcnd.myapp.models.Beverage;
 import com.squareup.picasso.Picasso;
 
@@ -27,7 +27,7 @@ public class BeverageRecyclerViewAdapter extends RecyclerView.Adapter<BeverageRe
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.fragment_beverage, parent, false);
+                .inflate(R.layout.fragment_beverage_item, parent, false);
         return new ViewHolder(view);
     }
 

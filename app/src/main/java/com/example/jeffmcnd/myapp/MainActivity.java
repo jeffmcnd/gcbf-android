@@ -3,13 +3,11 @@ package com.example.jeffmcnd.myapp;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,8 +21,9 @@ import android.widget.TextView;
 
 import com.example.jeffmcnd.myapp.activity.BrewerActivity;
 import com.example.jeffmcnd.myapp.fragments.BeverageFragment;
-import com.example.jeffmcnd.myapp.fragments.BrewerFragment;
-import com.example.jeffmcnd.myapp.fragments.FavoriteFragment;
+import com.example.jeffmcnd.myapp.fragments.BeverageListFragment;
+import com.example.jeffmcnd.myapp.fragments.BrewerListFragment;
+import com.example.jeffmcnd.myapp.fragments.FavoriteListFragment;
 import com.example.jeffmcnd.myapp.models.Beverage;
 import com.example.jeffmcnd.myapp.models.Brewer;
 
@@ -37,19 +36,19 @@ import butterknife.ButterKnife;
 
 public class MainActivity
         extends FragmentActivity
-        implements BrewerFragment.OnListFragmentInteractionListener,
-        BeverageFragment.OnListFragmentInteractionListener,
-        FavoriteFragment.OnFavoriteListItemClicked {
+        implements BrewerListFragment.OnListFragmentInteractionListener,
+        BeverageListFragment.OnListFragmentInteractionListener,
+        FavoriteListFragment.OnFavoriteListItemClicked {
     @BindView(R.id.content_frame) FrameLayout contentFrameLayout;
     @BindView(R.id.drawer_layout) DrawerLayout drawerLayout;
     @BindView(R.id.drawer_ll) LinearLayout drawerLinearLayout;
     @BindView(R.id.drawer_lv) ListView drawerListView;
 
     private String[] drawerOptions;
-    private BrewerFragment brewerFragment = BrewerFragment.newInstance(1);
-    private BeverageFragment beverageFragment = BeverageFragment.newInstance(1);
-    private FavoriteFragment favoriteFragment = FavoriteFragment.newInstance(1);
-    private Fragment[] fragments = new Fragment[] {brewerFragment, beverageFragment, favoriteFragment};
+    private BrewerListFragment brewerListFragment = BrewerListFragment.newInstance(1);
+    private BeverageListFragment beverageListFragment = BeverageListFragment.newInstance(1);
+    private FavoriteListFragment favoriteListFragment = FavoriteListFragment.newInstance(1);
+    private Fragment[] fragments = new Fragment[] {brewerListFragment, beverageListFragment, favoriteListFragment};
     private String[] fragmentTags = new String[] {"brewer", "beverage", "favorite"};
 //    private MyFragmentPagerAdapter mPagerAdapter;
 //    private ViewPager mViewPager;
@@ -104,7 +103,8 @@ public class MainActivity
 
     @Override
     public void onListFragmentInteraction(Beverage bev) {
-        // Go to beverage page?
+        BeverageFragment fragment = BeverageFragment.newInstance(bev);
+        getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, fragment).commit();
     }
 
     @Override
@@ -123,11 +123,11 @@ class MyFragmentPagerAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-                return BrewerFragment.newInstance(1);
+                return BrewerListFragment.newInstance(1);
             case 1:
-                return BeverageFragment.newInstance(1);
+                return BeverageListFragment.newInstance(1);
             default:
-                return BrewerFragment.newInstance(1);
+                return BrewerListFragment.newInstance(1);
         }
     }
 
