@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.view.LayoutInflater;
@@ -45,6 +46,11 @@ public class MainActivity
     @BindView(R.id.drawer_lv) ListView drawerListView;
 
     private String[] drawerOptions;
+    private BrewerFragment brewerFragment = BrewerFragment.newInstance(1);
+    private BeverageFragment beverageFragment = BeverageFragment.newInstance(1);
+    private FavoriteFragment favoriteFragment = FavoriteFragment.newInstance(1);
+    private Fragment[] fragments = new Fragment[] {brewerFragment, beverageFragment, favoriteFragment};
+    private String[] fragmentTags = new String[] {"brewer", "beverage", "favorite"};
 //    private MyFragmentPagerAdapter mPagerAdapter;
 //    private ViewPager mViewPager;
 
@@ -60,30 +66,25 @@ public class MainActivity
         drawerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Fragment fragment;
-                switch(position) {
-                    case 0: // Me
-                        fragment = BeverageFragment.newInstance(1);
-                        break;
-                    case 1: // Breweries
-                        fragment = BrewerFragment.newInstance(1);
-                        break;
-                    case 2: // Leaderboard
-                        fragment = FavoriteFragment.newInstance(1);
-                        break;
-                    default:
-                        fragment = BrewerFragment.newInstance(1);
-                        break;
+                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                if (getSupportFragmentManager().findFragmentByTag(fragmentTags[position]) == null) {
+                    transaction.add(R.id.content_frame, fragments[position], fragmentTags[position]);
                 }
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.content_frame, fragment)
-                        .commit();
+                for(int i = 0; i < fragments.length; i++) {
+                    if (i == position) {
+                        transaction.show(fragments[i]);
+                    } else if (getSupportFragmentManager().findFragmentByTag(fragmentTags[i]) != null) {
+                        transaction.hide(fragments[i]);
+                    }
+                }
+                transaction.commit();
                 drawerLayout.closeDrawer(drawerLinearLayout);
             }
         });
 
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.content_frame, BrewerFragment.newInstance(1))
+                .add(R.id.content_frame, fragments[0], fragmentTags[0])
+                .show(fragments[0])
                 .commit();
 
 //        mPagerAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager());
