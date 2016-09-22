@@ -72,7 +72,7 @@ public class FavoriteFragment extends Fragment {
                     .build();
 
             GcbfService client = retrofit.create(GcbfService.class);
-            Call<List<Beverage>> listBeveragesCall = client.listBeverages();
+            Call<List<Beverage>> listBeveragesCall = client.listFavorites();
 
             listBeveragesCall.enqueue(new Callback<List<Beverage>>() {
                 @Override
@@ -112,6 +112,6 @@ public class FavoriteFragment extends Fragment {
     }
 
     public interface OnFavoriteListItemClicked {
-        void onListFragmentInteraction(Beverage beverage);
+        void onFavoriteListItemClicked(Beverage beverage);
     }
 }

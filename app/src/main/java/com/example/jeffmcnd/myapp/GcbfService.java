@@ -14,4 +14,7 @@ public interface GcbfService {
 
     @GET("beverages")
     Call<List<Beverage>> listBeverages();
+
+    @GET("favorites")
+    Call<List<Beverage>> listFavorites();
 }

@@ -13,13 +13,17 @@ import android.support.v4.widget.DrawerLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.jeffmcnd.myapp.activity.BrewerActivity;
 import com.example.jeffmcnd.myapp.fragments.BeverageFragment;
 import com.example.jeffmcnd.myapp.fragments.BrewerFragment;
+import com.example.jeffmcnd.myapp.fragments.FavoriteFragment;
 import com.example.jeffmcnd.myapp.models.Beverage;
 import com.example.jeffmcnd.myapp.models.Brewer;
 
@@ -33,13 +37,16 @@ import butterknife.ButterKnife;
 public class MainActivity
         extends FragmentActivity
         implements BrewerFragment.OnListFragmentInteractionListener,
-        BeverageFragment.OnListFragmentInteractionListener {
+        BeverageFragment.OnListFragmentInteractionListener,
+        FavoriteFragment.OnFavoriteListItemClicked {
+    @BindView(R.id.content_frame) FrameLayout contentFrameLayout;
     @BindView(R.id.drawer_layout) DrawerLayout drawerLayout;
+    @BindView(R.id.drawer_ll) LinearLayout drawerLinearLayout;
     @BindView(R.id.drawer_lv) ListView drawerListView;
 
     private String[] drawerOptions;
-    private MyFragmentPagerAdapter mPagerAdapter;
-    private ViewPager mViewPager;
+//    private MyFragmentPagerAdapter mPagerAdapter;
+//    private ViewPager mViewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,13 +57,41 @@ public class MainActivity
         drawerOptions = getResources().getStringArray(R.array.drawer_options);
 
         drawerListView.setAdapter(new DrawerListAdapter(this, new ArrayList<String>(Arrays.asList(drawerOptions))));
+        drawerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Fragment fragment;
+                switch(position) {
+                    case 0: // Me
+                        fragment = BeverageFragment.newInstance(1);
+                        break;
+                    case 1: // Breweries
+                        fragment = BrewerFragment.newInstance(1);
+                        break;
+                    case 2: // Leaderboard
+                        fragment = FavoriteFragment.newInstance(1);
+                        break;
+                    default:
+                        fragment = BrewerFragment.newInstance(1);
+                        break;
+                }
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.content_frame, fragment)
+                        .commit();
+                drawerLayout.closeDrawer(drawerLinearLayout);
+            }
+        });
 
-        mPagerAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager());
-        mViewPager = (ViewPager) findViewById(R.id.pager);
-        mViewPager.setAdapter(mPagerAdapter);
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.content_frame, BrewerFragment.newInstance(1))
+                .commit();
 
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
-        tabLayout.setupWithViewPager(mViewPager);
+//        mPagerAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager());
+//        mViewPager = (ViewPager) findViewById(R.id.pager);
+//        mViewPager.setAdapter(mPagerAdapter);
+//
+//        TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
+//        tabLayout.setupWithViewPager(mViewPager);
     }
 
     @Override
@@ -68,7 +103,12 @@ public class MainActivity
 
     @Override
     public void onListFragmentInteraction(Beverage bev) {
+        // Go to beverage page?
+    }
 
+    @Override
+    public void onFavoriteListItemClicked(Beverage beverage) {
+        // Go to beverage page?
     }
 }
 

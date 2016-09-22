@@ -35,14 +35,14 @@ public class FavoriteRecyclerViewAdapter extends RecyclerView.Adapter<FavoriteRe
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.beverage = beverages.get(position);
-        holder.countTextView.setText(holder.beverage.id);
+        holder.countTextView.setText(String.valueOf(holder.beverage.count));
         holder.nameTextView.setText(holder.beverage.name);
 
         holder.view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (null != listener) {
-                    listener.onListFragmentInteraction(holder.beverage);
+                    listener.onFavoriteListItemClicked(holder.beverage);
                 }
             }
         });
@@ -55,7 +55,7 @@ public class FavoriteRecyclerViewAdapter extends RecyclerView.Adapter<FavoriteRe
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.count_tv) TextView countTextView;
-        @BindView(R.id.count_tv) TextView nameTextView;
+        @BindView(R.id.name_tv) TextView nameTextView;
 
         public View view;
         public Beverage beverage;
