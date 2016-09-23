@@ -111,6 +111,6 @@ public class FavoriteListFragment extends Fragment {
     }
 
     public interface OnFavoriteListItemClicked {
-        void onFavoriteListItemClicked(Beverage beverage);
+        void onFavoriteListItemClicked(Beverage bev);
     }
 }

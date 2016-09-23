@@ -66,7 +66,7 @@ public class MainActivity
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        toolbar.setNavigationIcon(R.drawable.ic_menu);
+        initializeDrawer();
 
         drawerOptions = getResources().getStringArray(R.array.drawer_options);
 
@@ -110,8 +110,9 @@ public class MainActivity
     }
 
     @Override
-    public void onFavoriteListItemClicked(Beverage beverage) {
-        // Go to beverage page?
+    public void onFavoriteListItemClicked(Beverage bev) {
+        BeverageFragment fragment = BeverageFragment.newInstance(bev);
+        presentFragmentPage(fragment, bev.name);
     }
 
     @Override
@@ -153,9 +154,18 @@ public class MainActivity
         showFragment(curFragmentIndex, transaction);
         transaction.commit();
 
+        initializeDrawer();
+    }
+
+    private void initializeDrawer() {
         toolbarTextView.setText(getString(R.string.app_name));
         toolbar.setNavigationIcon(R.drawable.ic_menu);
-        toolbar.setNavigationOnClickListener(null);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                drawerLayout.openDrawer(drawerLinearLayout);
+            }
+        });
     }
 
     @Override
