@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +30,7 @@ import com.example.jeffmcnd.myapp.models.Brewer;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -38,7 +40,10 @@ public class MainActivity
         extends FragmentActivity
         implements BrewerListFragment.OnListFragmentInteractionListener,
         BeverageListFragment.OnListFragmentInteractionListener,
-        FavoriteListFragment.OnFavoriteListItemClicked {
+        FavoriteListFragment.OnFavoriteListItemClicked,
+        BeverageFragment.OnBeverageFragmentBackClicked {
+    @BindView(R.id.toolbar) public Toolbar toolbar;
+    @BindView(R.id.toolbar_tv) public TextView toolbarTextView;
     @BindView(R.id.content_frame) FrameLayout contentFrameLayout;
     @BindView(R.id.drawer_layout) DrawerLayout drawerLayout;
     @BindView(R.id.drawer_ll) LinearLayout drawerLinearLayout;
@@ -48,8 +53,9 @@ public class MainActivity
     private BrewerListFragment brewerListFragment = BrewerListFragment.newInstance(1);
     private BeverageListFragment beverageListFragment = BeverageListFragment.newInstance(1);
     private FavoriteListFragment favoriteListFragment = FavoriteListFragment.newInstance(1);
-    private Fragment[] fragments = new Fragment[] {brewerListFragment, beverageListFragment, favoriteListFragment};
-    private String[] fragmentTags = new String[] {"brewer", "beverage", "favorite"};
+    private List<Fragment> fragments = new ArrayList(Arrays.asList(brewerListFragment, beverageListFragment, favoriteListFragment));
+    private String[] fragmentTags = new String[] {"brewer_list", "beverage_list", "favorite_list"};
+    private int curFragmentIndex = 0;
 //    private MyFragmentPagerAdapter mPagerAdapter;
 //    private ViewPager mViewPager;
 
@@ -66,24 +72,18 @@ public class MainActivity
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                curFragmentIndex = position;
                 if (getSupportFragmentManager().findFragmentByTag(fragmentTags[position]) == null) {
-                    transaction.add(R.id.content_frame, fragments[position], fragmentTags[position]);
+                    transaction.add(R.id.content_frame, fragments.get(position), fragmentTags[position]);
                 }
-                for(int i = 0; i < fragments.length; i++) {
-                    if (i == position) {
-                        transaction.show(fragments[i]);
-                    } else if (getSupportFragmentManager().findFragmentByTag(fragmentTags[i]) != null) {
-                        transaction.hide(fragments[i]);
-                    }
-                }
+                showFragment(position, transaction);
                 transaction.commit();
                 drawerLayout.closeDrawer(drawerLinearLayout);
             }
         });
 
         getSupportFragmentManager().beginTransaction()
-                .add(R.id.content_frame, fragments[0], fragmentTags[0])
-                .show(fragments[0])
+                .add(R.id.content_frame, fragments.get(0), fragmentTags[0])
                 .commit();
 
 //        mPagerAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager());
@@ -104,12 +104,61 @@ public class MainActivity
     @Override
     public void onListFragmentInteraction(Beverage bev) {
         BeverageFragment fragment = BeverageFragment.newInstance(bev);
-        getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, fragment).commit();
+        fragments.add(fragment);
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.add(R.id.content_frame, fragment, "page");
+        showFragment(fragments.size() - 1, transaction);
+        transaction.commit();
+
+        toolbarTextView.setText(bev.name);
+        toolbar.setNavigationIcon(R.mipmap.ic_launcher);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                returnFromFragmentPage();
+            }
+        });
     }
 
     @Override
     public void onFavoriteListItemClicked(Beverage beverage) {
         // Go to beverage page?
+    }
+
+    @Override
+    public void onBeverageFragmentBackClicked() {
+
+    }
+
+    private void showFragment(int position, FragmentTransaction transaction) {
+        for(int i = 0; i < fragments.size(); i++) {
+            if (i == position) {
+                transaction.show(fragments.get(i));
+            } else if (getSupportFragmentManager().findFragmentByTag(fragmentTags[i]) != null) {
+                transaction.hide(fragments.get(i));
+            }
+        }
+    }
+
+    public void returnFromFragmentPage() {
+        fragments.remove(fragments.size() - 1);
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.remove(getSupportFragmentManager().findFragmentByTag("page"));
+        showFragment(curFragmentIndex, transaction);
+        transaction.commit();
+
+        toolbarTextView.setText(getString(R.string.app_name));
+        toolbar.setNavigationIcon(null);
+        toolbar.setNavigationOnClickListener(null);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (fragments.size() > fragmentTags.length) {
+            returnFromFragmentPage();
+        } else {
+            super.onBackPressed();
+        }
     }
 }
 

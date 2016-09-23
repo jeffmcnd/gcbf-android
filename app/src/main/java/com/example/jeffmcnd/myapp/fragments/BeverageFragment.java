@@ -13,10 +13,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.jeffmcnd.myapp.GcbfService;
+import com.example.jeffmcnd.myapp.MainActivity;
 import com.example.jeffmcnd.myapp.R;
 import com.example.jeffmcnd.myapp.models.Beverage;
 import com.example.jeffmcnd.myapp.models.Comment;
-import com.f2prateek.dart.Dart;
 import com.f2prateek.dart.InjectExtra;
 import com.squareup.picasso.Picasso;
 
@@ -28,14 +28,6 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.moshi.MoshiConverterFactory;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link BeverageFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link BeverageFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class BeverageFragment extends Fragment {
     @BindView(R.id.bev_id_tv) TextView bevIdTextView;
     @BindView(R.id.name_tv) TextView bevNameTextView;
@@ -46,7 +38,7 @@ public class BeverageFragment extends Fragment {
 
     @InjectExtra Beverage beverage;
 
-    private OnFragmentInteractionListener mListener;
+    private OnBeverageFragmentBackClicked listener;
 
     public BeverageFragment() {
     }
@@ -73,6 +65,7 @@ public class BeverageFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_beverage, container, false);
         ButterKnife.bind(this, view);
+
 
         bevIdTextView.setText(String.valueOf(beverage.id));
         bevNameTextView.setText(beverage.name);
@@ -111,40 +104,29 @@ public class BeverageFragment extends Fragment {
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
+        if (listener != null) {
+            listener.onBeverageFragmentBackClicked();
         }
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-//        if (context instanceof OnFragmentInteractionListener) {
-//            mListener = (OnFragmentInteractionListener) context;
-//        } else {
-//            throw new RuntimeException(context.toString()
-//                    + " must implement OnFragmentInteractionListener");
-//        }
+        if (context instanceof OnBeverageFragmentBackClicked) {
+            listener = (OnBeverageFragmentBackClicked) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnFragmentInteractionListener");
+        }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
+        listener = null;
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+    public interface OnBeverageFragmentBackClicked {
+        void onBeverageFragmentBackClicked();
     }
 }
