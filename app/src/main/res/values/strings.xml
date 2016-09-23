@@ -10,4 +10,5 @@
         <item>Beverages</item>
         <item>Leaderboard</item>
     </string-array>
+    <string name="comment">Comment</string>
 </resources>

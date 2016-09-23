@@ -35,7 +35,7 @@ public class BrewerActivity extends AppCompatActivity {
         Dart.inject(this);
         ButterKnife.bind(this);
 
-        toolbar.setNavigationIcon(R.mipmap.ic_launcher);
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

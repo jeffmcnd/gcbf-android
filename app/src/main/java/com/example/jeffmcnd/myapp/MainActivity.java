@@ -23,6 +23,7 @@ import android.widget.TextView;
 import com.example.jeffmcnd.myapp.activity.BrewerActivity;
 import com.example.jeffmcnd.myapp.fragments.BeverageFragment;
 import com.example.jeffmcnd.myapp.fragments.BeverageListFragment;
+import com.example.jeffmcnd.myapp.fragments.BrewerFragment;
 import com.example.jeffmcnd.myapp.fragments.BrewerListFragment;
 import com.example.jeffmcnd.myapp.fragments.FavoriteListFragment;
 import com.example.jeffmcnd.myapp.models.Beverage;
@@ -65,6 +66,8 @@ public class MainActivity
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
+        toolbar.setNavigationIcon(R.drawable.ic_menu);
+
         drawerOptions = getResources().getStringArray(R.array.drawer_options);
 
         drawerListView.setAdapter(new DrawerListAdapter(this, new ArrayList<String>(Arrays.asList(drawerOptions))));
@@ -96,28 +99,14 @@ public class MainActivity
 
     @Override
     public void onListFragmentInteraction(Brewer brewer) {
-        Intent intent = new Intent(this, BrewerActivity.class);
-        intent.putExtra("brewer", brewer);
-        startActivity(intent);
+        BrewerFragment fragment = BrewerFragment.newInstance(brewer);
+        presentFragmentPage(fragment, brewer.name);
     }
 
     @Override
     public void onListFragmentInteraction(Beverage bev) {
         BeverageFragment fragment = BeverageFragment.newInstance(bev);
-        fragments.add(fragment);
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.add(R.id.content_frame, fragment, "page");
-        showFragment(fragments.size() - 1, transaction);
-        transaction.commit();
-
-        toolbarTextView.setText(bev.name);
-        toolbar.setNavigationIcon(R.mipmap.ic_launcher);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                returnFromFragmentPage();
-            }
-        });
+        presentFragmentPage(fragment, bev.name);
     }
 
     @Override
@@ -128,6 +117,23 @@ public class MainActivity
     @Override
     public void onBeverageFragmentBackClicked() {
 
+    }
+
+    private void presentFragmentPage(Fragment fragment, String toolbarTitle) {
+        fragments.add(fragment);
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.add(R.id.content_frame, fragment, "page");
+        showFragment(fragments.size() - 1, transaction);
+        transaction.commit();
+
+        toolbarTextView.setText(toolbarTitle);
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                returnFromFragmentPage();
+            }
+        });
     }
 
     private void showFragment(int position, FragmentTransaction transaction) {
@@ -148,7 +154,7 @@ public class MainActivity
         transaction.commit();
 
         toolbarTextView.setText(getString(R.string.app_name));
-        toolbar.setNavigationIcon(null);
+        toolbar.setNavigationIcon(R.drawable.ic_menu);
         toolbar.setNavigationOnClickListener(null);
     }
 

@@ -45,6 +45,7 @@ public class BeverageFragment extends Fragment {
 
     public static BeverageFragment newInstance(Beverage beverage) {
         BeverageFragment fragment = new BeverageFragment();
+        fragment.beverage = beverage;
         Bundle args = new Bundle();
         args.putParcelable("beverage", beverage);
         fragment.setArguments(args);
