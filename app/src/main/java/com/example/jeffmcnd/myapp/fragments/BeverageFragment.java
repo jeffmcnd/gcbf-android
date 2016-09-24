@@ -29,6 +29,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.moshi.MoshiConverterFactory;
 
 public class BeverageFragment extends Fragment {
+
     @BindView(R.id.bev_id_tv) TextView bevIdTextView;
     @BindView(R.id.name_tv) TextView bevNameTextView;
     @BindView(R.id.blurb_tv) TextView bevBlurbTextView;
@@ -36,9 +37,7 @@ public class BeverageFragment extends Fragment {
     @BindView(R.id.comment_et) EditText commentEditText;
     @BindView(R.id.image) ImageView imageView;
 
-    @InjectExtra Beverage beverage;
-
-    private OnBeverageFragmentBackClicked listener;
+    Beverage beverage;
 
     public BeverageFragment() {
     }
@@ -55,10 +54,6 @@ public class BeverageFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        Dart.inject(beverage, savedInstanceState);
-
-        Bundle args = getArguments();
-        beverage = args.getParcelable("beverage");
     }
 
     @Override
@@ -73,7 +68,7 @@ public class BeverageFragment extends Fragment {
         bevBlurbTextView.setText(beverage.blurb == null ? "" : beverage.blurb);
         brewerIdTextView.setText(String.valueOf(beverage.brewer_id));
         Picasso.with(getContext())
-                .load(beverage.imageurl == null ? "http://placekitten.com/200/300" : beverage.imageurl)
+                .load(beverage.imageurl == null ? "http://placekitten.com/300/200" : beverage.imageurl)
                 .into(imageView);
 
         Retrofit retrofit = new Retrofit.Builder()
@@ -101,33 +96,5 @@ public class BeverageFragment extends Fragment {
         });
 
         return view;
-    }
-
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (listener != null) {
-            listener.onBeverageFragmentBackClicked();
-        }
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnBeverageFragmentBackClicked) {
-            listener = (OnBeverageFragmentBackClicked) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        listener = null;
-    }
-
-    public interface OnBeverageFragmentBackClicked {
-        void onBeverageFragmentBackClicked();
     }
 }

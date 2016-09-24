@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.example.jeffmcnd.myapp.activity.BrewerActivity">
+    tools:context="com.example.jeffmcnd.myapp.activity.BeverageActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_weight="0"
@@ -23,7 +23,7 @@
                 android:textColor="@android:color/white"/>
 
         </android.support.v7.widget.Toolbar>
-    
+
     </android.support.design.widget.AppBarLayout>
 
     <FrameLayout android:id="@+id/content_frame"

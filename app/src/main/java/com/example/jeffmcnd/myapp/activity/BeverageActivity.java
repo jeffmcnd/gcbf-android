@@ -1,35 +1,32 @@
 package com.example.jeffmcnd.myapp.activity;
 
-import android.support.design.widget.NavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.example.jeffmcnd.myapp.R;
-
-import com.example.jeffmcnd.myapp.fragments.BrewerFragment;
+import com.example.jeffmcnd.myapp.fragments.BeverageFragment;
 import com.example.jeffmcnd.myapp.models.Beverage;
-import com.example.jeffmcnd.myapp.models.Booth;
-import com.example.jeffmcnd.myapp.models.Brewer;
 import com.f2prateek.dart.Dart;
 import com.f2prateek.dart.InjectExtra;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class BrewerActivity extends AppCompatActivity {
+public class BeverageActivity extends AppCompatActivity {
 
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.toolbar_tv) TextView toolbarTextView;
 
-    @InjectExtra Brewer brewer;
+    @InjectExtra Beverage beverage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_brewer);
+        setContentView(R.layout.activity_beverage);
         ButterKnife.bind(this);
         Dart.inject(this);
 
@@ -41,12 +38,12 @@ public class BrewerActivity extends AppCompatActivity {
             }
         });
 
-        if (brewer != null) {
-            toolbarTextView.setText(brewer.name);
+        if (beverage != null) {
+            toolbarTextView.setText(beverage.name);
         }
 
         if (savedInstanceState == null) {
-            BrewerFragment fragment = BrewerFragment.newInstance(brewer);
+            BeverageFragment fragment = BeverageFragment.newInstance(beverage);
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.content_frame, fragment)
                     .commit();

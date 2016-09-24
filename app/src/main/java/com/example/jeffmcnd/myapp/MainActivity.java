@@ -5,8 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.Toolbar;
@@ -20,10 +18,9 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.example.jeffmcnd.myapp.activity.BeverageActivity;
 import com.example.jeffmcnd.myapp.activity.BrewerActivity;
-import com.example.jeffmcnd.myapp.fragments.BeverageFragment;
 import com.example.jeffmcnd.myapp.fragments.BeverageListFragment;
-import com.example.jeffmcnd.myapp.fragments.BrewerFragment;
 import com.example.jeffmcnd.myapp.fragments.BrewerListFragment;
 import com.example.jeffmcnd.myapp.fragments.FavoriteListFragment;
 import com.example.jeffmcnd.myapp.models.Beverage;
@@ -41,8 +38,8 @@ public class MainActivity
         extends FragmentActivity
         implements BrewerListFragment.OnListFragmentInteractionListener,
         BeverageListFragment.OnListFragmentInteractionListener,
-        FavoriteListFragment.OnFavoriteListItemClicked,
-        BeverageFragment.OnBeverageFragmentBackClicked {
+        FavoriteListFragment.OnFavoriteListItemClicked {
+
     @BindView(R.id.toolbar) public Toolbar toolbar;
     @BindView(R.id.toolbar_tv) public TextView toolbarTextView;
     @BindView(R.id.content_frame) FrameLayout contentFrameLayout;
@@ -57,8 +54,6 @@ public class MainActivity
     private List<Fragment> fragments = new ArrayList(Arrays.asList(brewerListFragment, beverageListFragment, favoriteListFragment));
     private String[] fragmentTags = new String[] {"brewer_list", "beverage_list", "favorite_list"};
     private int curFragmentIndex = 0;
-//    private MyFragmentPagerAdapter mPagerAdapter;
-//    private ViewPager mViewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,36 +83,33 @@ public class MainActivity
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.content_frame, fragments.get(0), fragmentTags[0])
                 .commit();
-
-//        mPagerAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager());
-//        mViewPager = (ViewPager) findViewById(R.id.pager);
-//        mViewPager.setAdapter(mPagerAdapter);
-//
-//        TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
-//        tabLayout.setupWithViewPager(mViewPager);
     }
 
     @Override
     public void onListFragmentInteraction(Brewer brewer) {
-        BrewerFragment fragment = BrewerFragment.newInstance(brewer);
-        presentFragmentPage(fragment, brewer.name);
+        Intent intent = new Intent(this, BrewerActivity.class);
+        intent.putExtra("brewer", brewer);
+        startActivity(intent);
+//        BrewerFragment fragment = BrewerFragment.newInstance(brewer);
+//        presentFragmentPage(fragment, brewer.name);
     }
 
     @Override
     public void onListFragmentInteraction(Beverage bev) {
-        BeverageFragment fragment = BeverageFragment.newInstance(bev);
-        presentFragmentPage(fragment, bev.name);
+        Intent intent = new Intent(this, BeverageActivity.class);
+        intent.putExtra("beverage", bev);
+        startActivity(intent);
+//        BeverageFragment fragment = BeverageFragment.newInstance(bev);
+//        presentFragmentPage(fragment, bev.name);
     }
 
     @Override
     public void onFavoriteListItemClicked(Beverage bev) {
-        BeverageFragment fragment = BeverageFragment.newInstance(bev);
-        presentFragmentPage(fragment, bev.name);
-    }
-
-    @Override
-    public void onBeverageFragmentBackClicked() {
-
+        Intent intent = new Intent(this, BeverageActivity.class);
+        intent.putExtra("beverage", bev);
+        startActivity(intent);
+//        BeverageFragment fragment = BeverageFragment.newInstance(bev);
+//        presentFragmentPage(fragment, bev.name);
     }
 
     private void presentFragmentPage(Fragment fragment, String toolbarTitle) {
@@ -174,42 +166,6 @@ public class MainActivity
             returnFromFragmentPage();
         } else {
             super.onBackPressed();
-        }
-    }
-}
-
-class MyFragmentPagerAdapter extends FragmentPagerAdapter {
-
-    public MyFragmentPagerAdapter(FragmentManager fm) {
-        super(fm);
-    }
-
-    @Override
-    public Fragment getItem(int position) {
-        switch (position) {
-            case 0:
-                return BrewerListFragment.newInstance(1);
-            case 1:
-                return BeverageListFragment.newInstance(1);
-            default:
-                return BrewerListFragment.newInstance(1);
-        }
-    }
-
-    @Override
-    public int getCount() {
-        return 2;
-    }
-
-    @Override
-    public CharSequence getPageTitle(int position) {
-        switch(position) {
-            case 0:
-                return "Brewers";
-            case 1:
-                return "Beverages";
-            default:
-                return "Brewers";
         }
     }
 }
