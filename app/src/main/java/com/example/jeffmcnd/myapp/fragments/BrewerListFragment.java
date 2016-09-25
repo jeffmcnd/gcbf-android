@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import com.example.jeffmcnd.myapp.GcbfService;
 import com.example.jeffmcnd.myapp.R;
@@ -18,6 +19,8 @@ import com.example.jeffmcnd.myapp.models.Brewer;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -26,9 +29,10 @@ import retrofit2.converter.moshi.MoshiConverterFactory;
 
 public class BrewerListFragment extends Fragment {
 
-    // TODO: Customize parameter argument names
+    @BindView(R.id.list) RecyclerView recyclerView;
+    @BindView(R.id.progress_bar) ProgressBar progressBar;
+
     private static final String ARG_COLUMN_COUNT = "column-count";
-    // TODO: Customize parameters
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
 
@@ -57,43 +61,43 @@ public class BrewerListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_brewer_list, container, false);
+        ButterKnife.bind(this, view);
 
-        if (view instanceof RecyclerView) {
-            Context context = view.getContext();
-            final RecyclerView recyclerView = (RecyclerView) view;
-            if (mColumnCount <= 1) {
-                recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            } else {
-                recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
-            }
-            recyclerView.setAdapter(new BrewerRecyclerViewAdapter(new ArrayList<Brewer>(), mListener));
-
-            Retrofit retrofit = new Retrofit.Builder()
-                    .baseUrl("http://gcbf.mcnallydawes.xyz:8000/")
-                    .addConverterFactory(MoshiConverterFactory.create())
-                    .build();
-
-            GcbfService client = retrofit.create(GcbfService.class);
-            Call<List<Brewer>> listBrewersCall = client.listBrewers();
-
-            listBrewersCall.enqueue(new Callback<List<Brewer>>() {
-                @Override
-                public void onResponse(Call<List<Brewer>> call, Response<List<Brewer>> response) {
-                    if (response.isSuccessful()) {
-                        List<Brewer> brewers = response.body();
-                        recyclerView.setAdapter(new BrewerRecyclerViewAdapter(brewers, mListener));
-                    } else {
-                        int thing = 2;
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<List<Brewer>> call, Throwable t) {
-                    // something went completely south (like no internet connection)
-                    Log.d("Error", t.getMessage());
-                }
-            });
+        Context context = view.getContext();
+        if (mColumnCount <= 1) {
+            recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        } else {
+            recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
         }
+        recyclerView.setAdapter(new BrewerRecyclerViewAdapter(new ArrayList<Brewer>(), mListener));
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://gcbf.mcnallydawes.xyz:8000/")
+                .addConverterFactory(MoshiConverterFactory.create())
+                .build();
+
+        GcbfService client = retrofit.create(GcbfService.class);
+        Call<List<Brewer>> listBrewersCall = client.listBrewers();
+
+        listBrewersCall.enqueue(new Callback<List<Brewer>>() {
+            @Override
+            public void onResponse(Call<List<Brewer>> call, Response<List<Brewer>> response) {
+                if (response.isSuccessful()) {
+                    List<Brewer> brewers = response.body();
+                    recyclerView.setAdapter(new BrewerRecyclerViewAdapter(brewers, mListener));
+                    recyclerView.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(View.GONE);
+                } else {
+                    int thing = 2;
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Brewer>> call, Throwable t) {
+                // something went completely south (like no internet connection)
+                Log.d("Error", t.getMessage());
+            }
+        });
 
         return view;
     }
