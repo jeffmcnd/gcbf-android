@@ -4,12 +4,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.example.jeffmcnd.myapp.R;
-import com.example.jeffmcnd.myapp.fragments.BeverageFragment;
-import com.example.jeffmcnd.myapp.models.Beverage;
+import com.example.jeffmcnd.myapp.fragment.BeverageFragment;
+import com.example.jeffmcnd.myapp.model.Beverage;
 import com.f2prateek.dart.Dart;
 import com.f2prateek.dart.InjectExtra;
 

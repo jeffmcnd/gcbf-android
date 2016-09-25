@@ -1,4 +1,4 @@
-package com.example.jeffmcnd.myapp.fragments;
+package com.example.jeffmcnd.myapp.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -13,7 +13,7 @@ import android.widget.ProgressBar;
 import com.example.jeffmcnd.myapp.GcbfListFragment;
 import com.example.jeffmcnd.myapp.GcbfService;
 import com.example.jeffmcnd.myapp.R;
-import com.example.jeffmcnd.myapp.models.Beverage;
+import com.example.jeffmcnd.myapp.model.Beverage;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -36,8 +36,7 @@ public class FavoriteListFragment extends GcbfListFragment {
 
     private OnFavoriteListItemClicked mListener;
 
-    public FavoriteListFragment() {
-    }
+    public FavoriteListFragment() { }
 
     public static FavoriteListFragment newInstance(int columnCount) {
         FavoriteListFragment fragment = new FavoriteListFragment();

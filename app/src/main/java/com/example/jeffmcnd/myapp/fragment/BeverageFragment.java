@@ -1,7 +1,5 @@
-package com.example.jeffmcnd.myapp.fragments;
+package com.example.jeffmcnd.myapp.fragment;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -13,11 +11,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.jeffmcnd.myapp.GcbfService;
-import com.example.jeffmcnd.myapp.MainActivity;
 import com.example.jeffmcnd.myapp.R;
-import com.example.jeffmcnd.myapp.models.Beverage;
-import com.example.jeffmcnd.myapp.models.Comment;
-import com.f2prateek.dart.InjectExtra;
+import com.example.jeffmcnd.myapp.model.Beverage;
+import com.example.jeffmcnd.myapp.model.Comment;
 import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
@@ -39,8 +35,7 @@ public class BeverageFragment extends Fragment {
 
     Beverage beverage;
 
-    public BeverageFragment() {
-    }
+    public BeverageFragment() { }
 
     public static BeverageFragment newInstance(Beverage beverage) {
         BeverageFragment fragment = new BeverageFragment();

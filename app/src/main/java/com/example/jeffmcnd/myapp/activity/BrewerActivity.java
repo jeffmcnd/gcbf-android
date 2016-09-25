@@ -1,6 +1,5 @@
 package com.example.jeffmcnd.myapp.activity;
 
-import android.support.design.widget.NavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -9,10 +8,8 @@ import android.widget.TextView;
 
 import com.example.jeffmcnd.myapp.R;
 
-import com.example.jeffmcnd.myapp.fragments.BrewerFragment;
-import com.example.jeffmcnd.myapp.models.Beverage;
-import com.example.jeffmcnd.myapp.models.Booth;
-import com.example.jeffmcnd.myapp.models.Brewer;
+import com.example.jeffmcnd.myapp.fragment.BrewerFragment;
+import com.example.jeffmcnd.myapp.model.Brewer;
 import com.f2prateek.dart.Dart;
 import com.f2prateek.dart.InjectExtra;
 

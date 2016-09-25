@@ -1,4 +1,4 @@
-package com.example.jeffmcnd.myapp.fragments;
+package com.example.jeffmcnd.myapp.fragment;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.jeffmcnd.myapp.R;
-import com.example.jeffmcnd.myapp.models.Beverage;
+import com.example.jeffmcnd.myapp.model.Beverage;
 
 import java.util.List;
 

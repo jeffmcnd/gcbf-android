@@ -11,7 +11,15 @@
         <item>Leaderboard</item>
     </string-array>
     <string name="comment">Comment</string>
-    <string name="no_network">No network connection.</string>
     <string name="unable_to_connect">Unable to load data.</string>
     <string name="retry_network">Retry</string>
+    <string name="name_prompt">Username</string>
+    <string name="submit">Submit</string>
+
+    <string name="error_name_short">Name must be at least 4 characters long.</string>
+    <string name="error_name_space">No spaces, please.</string>
+    <string name="error_no_network">No network connection.</string>
+    <string name="error_connect_fail">Failed to connect.</string>
+
+    <string name="hint_account_name">Username</string>
 </resources>

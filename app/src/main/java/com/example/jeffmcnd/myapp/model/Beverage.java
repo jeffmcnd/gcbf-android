@@ -1,4 +1,4 @@
-package com.example.jeffmcnd.myapp.models;
+package com.example.jeffmcnd.myapp.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;

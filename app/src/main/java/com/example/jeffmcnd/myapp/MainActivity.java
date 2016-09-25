@@ -20,11 +20,11 @@ import android.widget.TextView;
 
 import com.example.jeffmcnd.myapp.activity.BeverageActivity;
 import com.example.jeffmcnd.myapp.activity.BrewerActivity;
-import com.example.jeffmcnd.myapp.fragments.BeverageListFragment;
-import com.example.jeffmcnd.myapp.fragments.BrewerListFragment;
-import com.example.jeffmcnd.myapp.fragments.FavoriteListFragment;
-import com.example.jeffmcnd.myapp.models.Beverage;
-import com.example.jeffmcnd.myapp.models.Brewer;
+import com.example.jeffmcnd.myapp.fragment.BeverageListFragment;
+import com.example.jeffmcnd.myapp.fragment.BrewerListFragment;
+import com.example.jeffmcnd.myapp.fragment.FavoriteListFragment;
+import com.example.jeffmcnd.myapp.model.Beverage;
+import com.example.jeffmcnd.myapp.model.Brewer;
 
 import java.util.ArrayList;
 import java.util.Arrays;

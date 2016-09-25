@@ -1,4 +1,4 @@
-package com.example.jeffmcnd.myapp.fragments;
+package com.example.jeffmcnd.myapp.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.jeffmcnd.myapp.R;
-import com.example.jeffmcnd.myapp.models.Brewer;
+import com.example.jeffmcnd.myapp.model.Brewer;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -22,6 +22,8 @@ public class BrewerFragment extends Fragment {
     @BindView(R.id.bevs) TextView bevTextView;
 
     Brewer brewer;
+
+    public BrewerFragment() { }
 
     public static BrewerFragment newInstance(Brewer brewer) {
         BrewerFragment fragment = new BrewerFragment();
