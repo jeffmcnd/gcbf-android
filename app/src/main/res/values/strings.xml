@@ -12,6 +12,6 @@
     </string-array>
     <string name="comment">Comment</string>
     <string name="no_network">No network connection.</string>
-    <stirng name="unable_to_connect">Unable to </stirng>
+    <string name="unable_to_connect">Unable to load data.</string>
     <string name="retry_network">Retry</string>
 </resources>

@@ -1,12 +1,7 @@
 package com.example.jeffmcnd.myapp.fragments;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.net.ConnectivityManager;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -15,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
+import com.example.jeffmcnd.myapp.GcbfListFragment;
 import com.example.jeffmcnd.myapp.GcbfService;
 import com.example.jeffmcnd.myapp.R;
 import com.example.jeffmcnd.myapp.models.Beverage;
@@ -32,15 +28,13 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.moshi.MoshiConverterFactory;
 
-public class BeverageListFragment extends Fragment {
+public class BeverageListFragment extends GcbfListFragment {
 
     @BindView(R.id.list) RecyclerView recyclerView;
     @BindView(R.id.progress_bar) ProgressBar progressBar;
     @BindView(R.id.error_layout) LinearLayout errorLayout;
 
     private OnListFragmentInteractionListener listener;
-    private NetworkChangeReceiver networkChangeReceiver = new NetworkChangeReceiver();
-    private boolean downloading = false;
 
     public BeverageListFragment() {
     }
@@ -49,11 +43,6 @@ public class BeverageListFragment extends Fragment {
     public static BeverageListFragment newInstance(int columnCount) {
         BeverageListFragment fragment = new BeverageListFragment();
         return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
     }
 
     @Override
@@ -88,37 +77,18 @@ public class BeverageListFragment extends Fragment {
         listener = null;
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        IntentFilter intentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
-        getActivity().registerReceiver(networkChangeReceiver, intentFilter);
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        getActivity().unregisterReceiver(networkChangeReceiver);
-    }
-
-    class NetworkChangeReceiver extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            Bundle extras = intent.getExtras();
-            if (extras != null) {
-                if(!extras.getBoolean(ConnectivityManager.EXTRA_NO_CONNECTIVITY) && recyclerView.getAdapter() == null && !downloading) {
-                    loadData();
-                }
-            }
-        }
-    }
-
     public interface OnListFragmentInteractionListener {
         void onListFragmentInteraction(Beverage bev);
     }
 
+    @Override
     public void loadData() {
         downloading = true;
+
+        recyclerView.setVisibility(View.GONE);
+        progressBar.setVisibility(View.VISIBLE);
+        errorLayout.setVisibility(View.GONE);
+
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
                 .connectTimeout(10, TimeUnit.SECONDS)
                 .build();
@@ -130,7 +100,6 @@ public class BeverageListFragment extends Fragment {
                 .build();
 
         GcbfService client = retrofit.create(GcbfService.class);
-
         Call<List<Beverage>> listBeveragesCall = client.listBeverages();
 
         listBeveragesCall.enqueue(new Callback<List<Beverage>>() {
@@ -142,6 +111,7 @@ public class BeverageListFragment extends Fragment {
                     recyclerView.setVisibility(View.VISIBLE);
                     progressBar.setVisibility(View.GONE);
                     errorLayout.setVisibility(View.GONE);
+                    loaded = true;
                 }
                 downloading = false;
             }
@@ -158,9 +128,6 @@ public class BeverageListFragment extends Fragment {
 
     @OnClick(R.id.retry_btn)
     public void retryButtonClicked() {
-        recyclerView.setVisibility(View.GONE);
-        progressBar.setVisibility(View.VISIBLE);
-        errorLayout.setVisibility(View.GONE);
         loadData();
     }
 }

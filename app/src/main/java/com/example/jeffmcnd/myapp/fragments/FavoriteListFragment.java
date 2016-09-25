@@ -2,8 +2,6 @@ package com.example.jeffmcnd.myapp.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -12,30 +10,30 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
+import com.example.jeffmcnd.myapp.GcbfListFragment;
 import com.example.jeffmcnd.myapp.GcbfService;
 import com.example.jeffmcnd.myapp.R;
 import com.example.jeffmcnd.myapp.models.Beverage;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.moshi.MoshiConverterFactory;
 
-public class FavoriteListFragment extends Fragment {
+public class FavoriteListFragment extends GcbfListFragment {
 
     @BindView(R.id.list) RecyclerView recyclerView;
     @BindView(R.id.progress_bar) ProgressBar progressBar;
     @BindView(R.id.error_layout) LinearLayout errorLayout;
 
-    private static final String ARG_COLUMN_COUNT = "column-count";
-    private int mColumnCount = 1;
     private OnFavoriteListItemClicked mListener;
 
     public FavoriteListFragment() {
@@ -43,19 +41,7 @@ public class FavoriteListFragment extends Fragment {
 
     public static FavoriteListFragment newInstance(int columnCount) {
         FavoriteListFragment fragment = new FavoriteListFragment();
-        Bundle args = new Bundle();
-        args.putInt(ARG_COLUMN_COUNT, columnCount);
-        fragment.setArguments(args);
         return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        if (getArguments() != null) {
-            mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
-        }
     }
 
     @Override
@@ -65,12 +51,8 @@ public class FavoriteListFragment extends Fragment {
         ButterKnife.bind(this, view);
 
         Context context = view.getContext();
-        if (mColumnCount <= 1) {
-            recyclerView.setLayoutManager(new LinearLayoutManager(context));
-        } else {
-            recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
-        }
-        recyclerView.setAdapter(new FavoriteRecyclerViewAdapter(new ArrayList<Beverage>(), mListener));
+        recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        recyclerView.setAdapter(null);
 
         loadData();
 
@@ -99,9 +81,21 @@ public class FavoriteListFragment extends Fragment {
         void onFavoriteListItemClicked(Beverage bev);
     }
 
+    @Override
     public void loadData() {
+        downloading = true;
+
+        recyclerView.setVisibility(View.GONE);
+        progressBar.setVisibility(View.VISIBLE);
+        errorLayout.setVisibility(View.GONE);
+
+        OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                .connectTimeout(10, TimeUnit.SECONDS)
+                .build();
+
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://gcbf.mcnallydawes.xyz:8000/")
+                .client(okHttpClient)
                 .addConverterFactory(MoshiConverterFactory.create())
                 .build();
 
@@ -117,7 +111,9 @@ public class FavoriteListFragment extends Fragment {
                     recyclerView.setVisibility(View.VISIBLE);
                     progressBar.setVisibility(View.GONE);
                     errorLayout.setVisibility(View.GONE);
+                    loaded = true;
                 }
+                downloading = false;
             }
 
             @Override
@@ -125,15 +121,13 @@ public class FavoriteListFragment extends Fragment {
                 recyclerView.setVisibility(View.GONE);
                 progressBar.setVisibility(View.GONE);
                 errorLayout.setVisibility(View.VISIBLE);
+                downloading = false;
             }
         });
     }
 
     @OnClick(R.id.retry_btn)
     public void retryButtonClicked() {
-        recyclerView.setVisibility(View.GONE);
-        progressBar.setVisibility(View.VISIBLE);
-        errorLayout.setVisibility(View.GONE);
         loadData();
     }
 }
