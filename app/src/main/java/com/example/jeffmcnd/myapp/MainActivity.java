@@ -2,6 +2,8 @@ package com.example.jeffmcnd.myapp;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -16,6 +18,7 @@ import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.jeffmcnd.myapp.activity.BeverageActivity;
@@ -46,6 +49,7 @@ public class MainActivity
     @BindView(R.id.drawer_layout) DrawerLayout drawerLayout;
     @BindView(R.id.drawer_ll) LinearLayout drawerLinearLayout;
     @BindView(R.id.drawer_lv) ListView drawerListView;
+    @BindView(R.id.error_layout) RelativeLayout errorLayout;
 
     private String[] drawerOptions;
     private BrewerListFragment brewerListFragment = BrewerListFragment.newInstance(1);
@@ -79,6 +83,16 @@ public class MainActivity
                 drawerLayout.closeDrawer(drawerLinearLayout);
             }
         });
+
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+
+        if (!isConnected) {
+            contentFrameLayout.setVisibility(View.GONE);
+            errorLayout.setVisibility(View.VISIBLE);
+        }
 
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.content_frame, fragments.get(0), fragmentTags[0])

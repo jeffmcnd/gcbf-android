@@ -11,4 +11,5 @@
         <item>Leaderboard</item>
     </string-array>
     <string name="comment">Comment</string>
+    <string name="no_network">No network connection.</string>
 </resources>
