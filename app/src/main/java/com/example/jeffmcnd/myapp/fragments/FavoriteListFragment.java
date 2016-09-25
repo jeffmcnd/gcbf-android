@@ -6,10 +6,10 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
 import com.example.jeffmcnd.myapp.GcbfService;
@@ -21,6 +21,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -31,6 +32,7 @@ public class FavoriteListFragment extends Fragment {
 
     @BindView(R.id.list) RecyclerView recyclerView;
     @BindView(R.id.progress_bar) ProgressBar progressBar;
+    @BindView(R.id.error_layout) LinearLayout errorLayout;
 
     private static final String ARG_COLUMN_COUNT = "column-count";
     private int mColumnCount = 1;
@@ -70,30 +72,7 @@ public class FavoriteListFragment extends Fragment {
         }
         recyclerView.setAdapter(new FavoriteRecyclerViewAdapter(new ArrayList<Beverage>(), mListener));
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://gcbf.mcnallydawes.xyz:8000/")
-                .addConverterFactory(MoshiConverterFactory.create())
-                .build();
-
-        GcbfService client = retrofit.create(GcbfService.class);
-        Call<List<Beverage>> listBeveragesCall = client.listFavorites();
-
-        listBeveragesCall.enqueue(new Callback<List<Beverage>>() {
-            @Override
-            public void onResponse(Call<List<Beverage>> call, Response<List<Beverage>> response) {
-                if (response.isSuccessful()) {
-                    List<Beverage> beverages = response.body();
-                    recyclerView.setAdapter(new FavoriteRecyclerViewAdapter(beverages, mListener));
-                    recyclerView.setVisibility(View.VISIBLE);
-                    progressBar.setVisibility(View.GONE);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<Beverage>> call, Throwable t) {
-                Log.d("Error", t.getMessage());
-            }
-        });
+        loadData();
 
         return view;
     }
@@ -118,5 +97,43 @@ public class FavoriteListFragment extends Fragment {
 
     public interface OnFavoriteListItemClicked {
         void onFavoriteListItemClicked(Beverage bev);
+    }
+
+    public void loadData() {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://gcbf.mcnallydawes.xyz:8000/")
+                .addConverterFactory(MoshiConverterFactory.create())
+                .build();
+
+        GcbfService client = retrofit.create(GcbfService.class);
+        Call<List<Beverage>> listBeveragesCall = client.listFavorites();
+
+        listBeveragesCall.enqueue(new Callback<List<Beverage>>() {
+            @Override
+            public void onResponse(Call<List<Beverage>> call, Response<List<Beverage>> response) {
+                if (response.isSuccessful()) {
+                    List<Beverage> beverages = response.body();
+                    recyclerView.setAdapter(new FavoriteRecyclerViewAdapter(beverages, mListener));
+                    recyclerView.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(View.GONE);
+                    errorLayout.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Beverage>> call, Throwable t) {
+                recyclerView.setVisibility(View.GONE);
+                progressBar.setVisibility(View.GONE);
+                errorLayout.setVisibility(View.VISIBLE);
+            }
+        });
+    }
+
+    @OnClick(R.id.retry_btn)
+    public void retryButtonClicked() {
+        recyclerView.setVisibility(View.GONE);
+        progressBar.setVisibility(View.VISIBLE);
+        errorLayout.setVisibility(View.GONE);
+        loadData();
     }
 }
