@@ -80,6 +80,7 @@ public class MainActivity
             }
         });
 
+        toolbarTextView.setText(drawerOptions[0]);
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.content_frame, fragments.get(0), fragmentTags[0])
                 .commit();
@@ -133,6 +134,7 @@ public class MainActivity
         for(int i = 0; i < fragments.size(); i++) {
             if (i == position) {
                 transaction.show(fragments.get(i));
+                toolbarTextView.setText(drawerOptions[i]);
             } else if (getSupportFragmentManager().findFragmentByTag(fragmentTags[i]) != null) {
                 transaction.hide(fragments.get(i));
             }
