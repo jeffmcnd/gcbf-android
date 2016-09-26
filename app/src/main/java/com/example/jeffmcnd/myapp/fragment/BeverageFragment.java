@@ -86,8 +86,8 @@ public class BeverageFragment extends Fragment {
                 .equalTo("beverage_id", beverage.id)
                 .findAll();
         if (commentResults.size() == 0) {
-            comment = new Comment(-1, "", account.id, beverage.id, null);
             realm.beginTransaction();
+            comment = new Comment(Constants.getNextCommentId(getActivity()), "", account.id, beverage.id, null);
             realm.copyToRealm(comment);
             realm.commitTransaction();
         } else {

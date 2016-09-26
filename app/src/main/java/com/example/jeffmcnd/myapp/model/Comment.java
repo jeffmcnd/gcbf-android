@@ -6,8 +6,6 @@ import io.realm.annotations.PrimaryKey;
 public class Comment extends RealmObject /*implements Parcelable*/ {
 
     @PrimaryKey
-    public int realmId;
-
     public int id;
     public String content;
     public int user_id;
