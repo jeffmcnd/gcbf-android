@@ -46,13 +46,13 @@ public class CreateAccountActivity extends AppCompatActivity {
         final RealmResults<Account> results = realm.where(Account.class).findAll();
 
         if (results.size() > 0) {
-            realm.executeTransaction(new Realm.Transaction() {
-                @Override
-                public void execute(Realm realm) {
-                    results.deleteAllFromRealm();
-                }
-            });
-//            startMainActivity();
+//            realm.executeTransaction(new Realm.Transaction() {
+//                @Override
+//                public void execute(Realm realm) {
+//                    results.deleteAllFromRealm();
+//                }
+//            });
+            startMainActivity();
         }
     }
 
@@ -99,8 +99,6 @@ public class CreateAccountActivity extends AppCompatActivity {
                         saveAccount(account);
                         startMainActivity();
                     }
-                } else {
-                    int thing = 2;
                 }
             }
 
@@ -114,7 +112,9 @@ public class CreateAccountActivity extends AppCompatActivity {
     }
 
     public Realm getRealmInstance() {
-        RealmConfiguration realmConfig = new RealmConfiguration.Builder(this).build();
+        RealmConfiguration realmConfig = new RealmConfiguration.Builder(this)
+                                                               .deleteRealmIfMigrationNeeded()
+                                                               .build();
         Realm.setDefaultConfiguration(realmConfig);
         return Realm.getDefaultInstance();
     }
@@ -124,6 +124,7 @@ public class CreateAccountActivity extends AppCompatActivity {
         realm.beginTransaction();
         realm.copyToRealm(account);
         realm.commitTransaction();
+        realm.close();
     }
 
     public void startMainActivity() {

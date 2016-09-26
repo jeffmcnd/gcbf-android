@@ -21,6 +21,7 @@ public class BeverageActivity extends AppCompatActivity {
     @BindView(R.id.toolbar_tv) TextView toolbarTextView;
 
     @InjectExtra Beverage beverage;
+    public BeverageFragment fragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,10 +43,16 @@ public class BeverageActivity extends AppCompatActivity {
         }
 
         if (savedInstanceState == null) {
-            BeverageFragment fragment = BeverageFragment.newInstance(beverage);
+            fragment = BeverageFragment.newInstance(beverage);
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.content_frame, fragment)
                     .commit();
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        fragment.saveComment();
+        super.onBackPressed();
     }
 }

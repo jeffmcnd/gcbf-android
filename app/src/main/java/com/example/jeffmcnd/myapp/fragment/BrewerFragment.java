@@ -16,24 +16,36 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class BrewerFragment extends Fragment {
+
+    public static final String BREWER_TAG = "brewer";
+
     @BindView(R.id.name) TextView nameTextView;
     @BindView(R.id.location) TextView locationTextView;
     @BindView(R.id.booths) TextView boothTextView;
     @BindView(R.id.bevs) TextView bevTextView;
 
-    Brewer brewer;
+    private Brewer brewer;
 
     public BrewerFragment() { }
 
     public static BrewerFragment newInstance(Brewer brewer) {
         BrewerFragment fragment = new BrewerFragment();
-        fragment.brewer = brewer;
+        Bundle args = new Bundle();
+        args.putParcelable(BREWER_TAG, brewer);
+        fragment.setArguments(args);
         return fragment;
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Bundle args = getArguments();
+        if (args != null) {
+            if (args.containsKey(BREWER_TAG)) {
+                brewer = args.getParcelable(BREWER_TAG);
+            }
+        }
     }
 
     @Nullable
