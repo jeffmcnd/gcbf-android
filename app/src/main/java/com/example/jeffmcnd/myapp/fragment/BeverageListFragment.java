@@ -26,7 +26,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
-import retrofit2.converter.moshi.MoshiConverterFactory;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class BeverageListFragment extends GcbfListFragment {
 
@@ -95,7 +95,7 @@ public class BeverageListFragment extends GcbfListFragment {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://gcbf.mcnallydawes.xyz:8000/")
                 .client(okHttpClient)
-                .addConverterFactory(MoshiConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
         GcbfService client = retrofit.create(GcbfService.class);

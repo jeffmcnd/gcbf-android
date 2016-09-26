@@ -32,7 +32,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
-import retrofit2.converter.moshi.MoshiConverterFactory;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class BeverageFragment extends Fragment {
 
@@ -46,10 +46,14 @@ public class BeverageFragment extends Fragment {
     @BindView(R.id.image) ImageView imageView;
     @BindView(R.id.favorite_btn) Button favoriteButton;
 
+    private Realm realm;
+
     private Beverage beverage;
     private Account account;
-    private String content;
-    private boolean favorited = false;
+    private Comment comment;
+    private Favorite favorite;
+
+    private boolean currentlyFavorited = false;
     private boolean commentLoadSuccessful = false;
     private boolean favoriteLoadSuccessful = false;
 
@@ -74,10 +78,33 @@ public class BeverageFragment extends Fragment {
             }
         }
 
-        Realm realm = Constants.getRealmInstance(getActivity());
-        final RealmResults<Account> results = realm.where(Account.class).findAll();
-        account = results.first();
-        realm.close();
+        realm = Constants.getRealmInstance(getActivity());
+        account = realm.where(Account.class).findFirst();
+
+        final RealmResults<Comment> commentResults = realm.where(Comment.class)
+                .equalTo("user_id", account.id)
+                .equalTo("beverage_id", beverage.id)
+                .findAll();
+        if (commentResults.size() == 0) {
+            comment = new Comment(-1, "", account.id, beverage.id, null);
+            realm.beginTransaction();
+            realm.copyToRealm(comment);
+            realm.commitTransaction();
+        } else {
+            comment = commentResults.first();
+        }
+
+        final RealmResults<Favorite> favResults = realm.where(Favorite.class)
+                .equalTo("accountId", account.id)
+                .equalTo("beverageId", beverage.id)
+                .findAll();
+        if (favResults.size() == 0) {
+            favorite = null;
+            currentlyFavorited = false;
+        } else {
+            favorite = favResults.first();
+            currentlyFavorited = true;
+        }
     }
 
     @Override
@@ -97,13 +124,25 @@ public class BeverageFragment extends Fragment {
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://gcbf.mcnallydawes.xyz:8000/")
-                .addConverterFactory(MoshiConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
-        getComment(retrofit);
-        getFavorite(retrofit);
+        commentEditText.setText(comment.content);
+        favoriteButton.setText(getString(favorite == null ?
+                R.string.button_favorite :
+                R.string.button_unfavorite));
+
+//        This stuff will come in if I decide to implement passwords
+//        getComment(retrofit);
+//        getFavorite(retrofit);
 
         return view;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        realm.close();
     }
 
     private void getComment(Retrofit retrofit) {
@@ -116,7 +155,6 @@ public class BeverageFragment extends Fragment {
                 if (response.isSuccessful()) {
                     Comment comment = response.body();
                     commentEditText.setText(comment.content);
-                    content = comment.content;
                     commentLoadSuccessful = true;
                 }
             }
@@ -138,7 +176,6 @@ public class BeverageFragment extends Fragment {
                 if (response.isSuccessful()) {
                     Beverage bev = response.body();
                     favoriteButton.setText(getString(bev.error == null ? R.string.button_unfavorite : R.string.button_favorite));
-                    favorited = bev.error == null;
                     favoriteLoadSuccessful = true;
                 }
             }
@@ -152,12 +189,10 @@ public class BeverageFragment extends Fragment {
 
     @OnClick(R.id.favorite_btn)
     public void favoriteButtonClicked() {
-        if (favoriteButton.getText().toString().equals(getString(R.string.button_unfavorite))) {
-            favoriteButton.setText(getString(R.string.button_favorite));
-        } else {
-            favoriteButton.setText(getString(R.string.button_unfavorite));
-        }
-
+        currentlyFavorited = !currentlyFavorited;
+        favoriteButton.setText(getString(currentlyFavorited ?
+                R.string.button_unfavorite :
+                R.string.button_favorite));
     }
 
     public void saveState() {
@@ -167,54 +202,35 @@ public class BeverageFragment extends Fragment {
 
     private void saveComment() {
         String currentContent = commentEditText.getText().toString();
-        if(commentLoadSuccessful) {
-            if ((content == null && !currentContent.equals("")) || (content != null && !content.equals(currentContent))) {
-                Realm realm = Constants.getRealmInstance(getActivity());
+        if (!comment.content.equals(currentContent)) {
+            Realm realm = Constants.getRealmInstance(getActivity());
 
-                Comment comment = new Comment(-1, currentContent, beverage.id, account.id, null);
+            realm.beginTransaction();
+            comment.content = currentContent;
+            realm.copyToRealmOrUpdate(comment);
+            realm.commitTransaction();
 
-                final RealmResults<Comment> results = realm.where(Comment.class)
-                                                           .equalTo("beverage_id", beverage.id)
-                                                           .equalTo("user_id", account.id)
-                                                           .findAll();
-                realm.beginTransaction();
-
-                if (results.size() > 0) {
-                    comment = results.first();
-                    comment.content = currentContent;
-                }
-
-                realm.copyToRealm(comment);
-                realm.commitTransaction();
-                realm.close();
-
-                Intent intent = new Intent(getActivity(), UpdateCommentService.class);
-                intent.putExtra(Constants.COMMENT_CONTENT_KEY, currentContent);
-                intent.putExtra(Constants.BEVERAGE_ID_KEY, beverage.id);
-                intent.putExtra(Constants.ACCOUNT_ID_KEY, account.id);
-                getActivity().startService(intent);
-            }
+            Intent intent = new Intent(getActivity(), UpdateCommentService.class);
+            intent.putExtra(Constants.COMMENT_CONTENT_KEY, currentContent);
+            intent.putExtra(Constants.BEVERAGE_ID_KEY, beverage.id);
+            intent.putExtra(Constants.ACCOUNT_ID_KEY, account.id);
+            getActivity().startService(intent);
         }
     }
 
     private void saveFavorite() {
         boolean currentlyFavorited = favoriteButton.getText().toString().equals(getString(R.string.button_unfavorite));
-        if (favoriteLoadSuccessful && currentlyFavorited != favorited) {
+        if ((favorite == null && currentlyFavorited) || (favorite != null && !currentlyFavorited)) {
             Realm realm = Constants.getRealmInstance(getActivity());
-
-            Favorite fav = new Favorite(-1, account.id, beverage.id);
-
-            final RealmResults<Favorite> results = realm.where(Favorite.class)
-                    .equalTo("accountId", account.id)
-                    .equalTo("beverageId", beverage.id)
-                    .findAll();
-            if(results.size() > 0) {
-                fav = results.first();
-            } else {
+            if (currentlyFavorited) {
+                Favorite fav = new Favorite(-1, account.id, beverage.id);
                 realm.beginTransaction();
                 realm.copyToRealm(fav);
                 realm.commitTransaction();
-                realm.close();
+            } else {
+                realm.beginTransaction();
+                favorite.deleteFromRealm();
+                realm.commitTransaction();
             }
 
             Intent intent = new Intent(getActivity(), UpdateFavoriteService.class);

@@ -27,7 +27,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
-import retrofit2.converter.moshi.MoshiConverterFactory;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class CreateAccountActivity extends AppCompatActivity {
 
@@ -43,9 +43,17 @@ public class CreateAccountActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         Realm realm = Constants.getRealmInstance(this);
-        final RealmResults<Account> results = realm.where(Account.class).findAll();
 
+        final RealmResults<Account> results = realm.where(Account.class).findAll();
         if (results.size() > 0) {
+//            realm.executeTransaction(new Realm.Transaction() {
+//                @Override
+//                public void execute(Realm realm) {
+//                    results.deleteAllFromRealm();
+//                }
+//            });
+//
+//            final RealmResults<Comment> commentResults = realm.where(Comment.class).findAll();
 //            realm.executeTransaction(new Realm.Transaction() {
 //                @Override
 //                public void execute(Realm realm) {
@@ -54,6 +62,7 @@ public class CreateAccountActivity extends AppCompatActivity {
 //            });
             startMainActivity();
         }
+
     }
 
     @OnClick(R.id.submit_btn)
@@ -66,6 +75,7 @@ public class CreateAccountActivity extends AppCompatActivity {
             errorTextView.setText(getString(R.string.error_name_space));
             errorTextView.setVisibility(View.VISIBLE);
         } else {
+            button.setEnabled(false);
             errorTextView.setVisibility(View.GONE);
             progressBar.setVisibility(View.VISIBLE);
             createAccount(name);
@@ -80,7 +90,7 @@ public class CreateAccountActivity extends AppCompatActivity {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://gcbf.mcnallydawes.xyz:8000/")
                 .client(okHttpClient)
-                .addConverterFactory(MoshiConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
         GcbfService client = retrofit.create(GcbfService.class);
@@ -95,6 +105,7 @@ public class CreateAccountActivity extends AppCompatActivity {
                         errorTextView.setText(account.error);
                         errorTextView.setVisibility(View.VISIBLE);
                         progressBar.setVisibility(View.GONE);
+                        button.setEnabled(true);
                     } else {
                         saveAccount(account);
                         startMainActivity();
@@ -107,6 +118,7 @@ public class CreateAccountActivity extends AppCompatActivity {
                 errorTextView.setText(getString(R.string.error_connect_fail));
                 errorTextView.setVisibility(View.VISIBLE);
                 progressBar.setVisibility(View.GONE);
+                button.setEnabled(true);
             }
         });
     }

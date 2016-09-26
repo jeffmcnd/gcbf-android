@@ -1,11 +1,9 @@
 package com.example.jeffmcnd.myapp.model;
 
 import io.realm.RealmObject;
-import io.realm.annotations.PrimaryKey;
 
 public class Account extends RealmObject {
 
-    @PrimaryKey
     public int id;
     public String name;
     public String error;

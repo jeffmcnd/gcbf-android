@@ -7,15 +7,12 @@ import android.os.Bundle;
 import com.example.jeffmcnd.myapp.Constants;
 import com.example.jeffmcnd.myapp.GcbfService;
 import com.example.jeffmcnd.myapp.model.Beverage;
-import com.example.jeffmcnd.myapp.model.Favorite;
 
-import io.realm.Realm;
-import io.realm.RealmResults;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
-import retrofit2.converter.moshi.MoshiConverterFactory;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 
 public class UpdateFavoriteService extends IntentService {
@@ -40,7 +37,7 @@ public class UpdateFavoriteService extends IntentService {
                 boolean shouldPostFav = extras.getBoolean(Constants.SHOULD_POST_FAV);
                 Retrofit retrofit = new Retrofit.Builder()
                         .baseUrl("http://gcbf.mcnallydawes.xyz:8000/")
-                        .addConverterFactory(MoshiConverterFactory.create())
+                        .addConverterFactory(GsonConverterFactory.create())
                         .build();
 
                 GcbfService client = retrofit.create(GcbfService.class);
@@ -52,7 +49,7 @@ public class UpdateFavoriteService extends IntentService {
                     @Override
                     public void onResponse(Call<Beverage> call, Response<Beverage> response) {
                         if (response.isSuccessful()) {
-                            deleteFavoriteFromDb();
+
                         }
                     }
 
@@ -63,22 +60,5 @@ public class UpdateFavoriteService extends IntentService {
                 });
             }
         }
-    }
-
-    public void deleteFavoriteFromDb() {
-        Realm realm = Constants.getRealmInstance(this);
-        final RealmResults<Favorite> results = realm.where(Favorite.class)
-                .equalTo("beverageId", bevId)
-                .equalTo("accountId", accountId)
-                .findAll();
-        if (results.size() > 0) {
-            realm.executeTransaction(new Realm.Transaction() {
-                @Override
-                public void execute(Realm realm) {
-                    results.deleteAllFromRealm();
-                }
-            });
-        }
-        realm.close();
     }
 }
