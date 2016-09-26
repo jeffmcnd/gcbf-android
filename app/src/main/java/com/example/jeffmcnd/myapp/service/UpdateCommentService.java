@@ -1,13 +1,14 @@
-package com.example.jeffmcnd.myapp;
+package com.example.jeffmcnd.myapp.service;
 
 import android.app.IntentService;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.example.jeffmcnd.myapp.Constants;
+import com.example.jeffmcnd.myapp.GcbfService;
 import com.example.jeffmcnd.myapp.model.Comment;
 
 import io.realm.Realm;
-import io.realm.RealmConfiguration;
 import io.realm.RealmResults;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -19,9 +20,6 @@ public class UpdateCommentService extends IntentService {
 
     private int bevId;
     private int accountId;
-    public static final String COMMENT_KEY = "comment";
-    public static final String BEVERAGE_ID_KEY = "comment";
-    public static final String ACCOUNT_ID_KEY = "comment";
 
     public UpdateCommentService() {
         super("UpdateCommentService");
@@ -35,12 +33,12 @@ public class UpdateCommentService extends IntentService {
     protected void onHandleIntent(Intent intent) {
         Bundle extras = intent.getExtras();
         if (extras != null) {
-            if (extras.containsKey(COMMENT_KEY) &&
-                    extras.containsKey(BEVERAGE_ID_KEY) &&
-                    extras.containsKey(ACCOUNT_ID_KEY)) {
-                String content = extras.getString(COMMENT_KEY);
-                bevId = extras.getInt(BEVERAGE_ID_KEY);
-                accountId = extras.getInt(ACCOUNT_ID_KEY);
+            if (extras.containsKey(Constants.COMMENT_CONTENT_KEY) &&
+                    extras.containsKey(Constants.BEVERAGE_ID_KEY) &&
+                    extras.containsKey(Constants.ACCOUNT_ID_KEY)) {
+                String content = extras.getString(Constants.COMMENT_CONTENT_KEY);
+                bevId = extras.getInt(Constants.BEVERAGE_ID_KEY);
+                accountId = extras.getInt(Constants.ACCOUNT_ID_KEY);
                 Retrofit retrofit = new Retrofit.Builder()
                         .baseUrl("http://gcbf.mcnallydawes.xyz:8000/")
                         .addConverterFactory(MoshiConverterFactory.create())
@@ -69,16 +67,8 @@ public class UpdateCommentService extends IntentService {
         }
     }
 
-    public Realm getRealmInstance() {
-        RealmConfiguration realmConfig = new RealmConfiguration.Builder(this)
-                .deleteRealmIfMigrationNeeded()
-                .build();
-        Realm.setDefaultConfiguration(realmConfig);
-        return Realm.getDefaultInstance();
-    }
-
     public void deleteCommentFromRealm() {
-        Realm realm = getRealmInstance();
+        Realm realm = Constants.getRealmInstance(this);
         final RealmResults<Comment> results = realm.where(Comment.class)
                                                    .equalTo("beverage_id", bevId)
                                                    .equalTo("user_id", accountId)

@@ -52,7 +52,7 @@ public class BeverageActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        fragment.saveComment();
+        fragment.saveState();
         super.onBackPressed();
     }
 }

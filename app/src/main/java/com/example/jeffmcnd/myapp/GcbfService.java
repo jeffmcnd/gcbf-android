@@ -8,6 +8,7 @@ import com.example.jeffmcnd.myapp.model.Comment;
 import java.util.List;
 
 import retrofit2.Call;
+import retrofit2.http.DELETE;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
@@ -32,6 +33,18 @@ public interface GcbfService {
 
     @GET("favorites/{user_id}")
     Call<List<Beverage>> listUserFavorites(@Path("user_id") int userId);
+
+    @GET("favorites/{user_id}/{bev_id}")
+    Call<Beverage> getFavorite(@Path("user_id") int userId,
+                               @Path("bev_id") int bevId);
+
+    @POST("favorites/{user_id}/{bev_id}")
+    Call<Beverage> postFavorite(@Path("user_id") int userId,
+                                @Path("bev_id") int bevId);
+
+    @DELETE("favorites/{user_id}/{bev_id}")
+    Call<Beverage> deleteFavorite(@Path("user_id") int userId,
+                                @Path("bev_id") int bevId);
 
     @GET("comments/{user_id}/{bev_id}")
     Call<Comment> getComment(@Path("user_id") int userId,

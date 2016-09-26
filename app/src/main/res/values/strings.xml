@@ -22,4 +22,7 @@
     <string name="error_connect_fail">Failed to connect.</string>
 
     <string name="hint_account_name">Username</string>
+
+    <string name="button_favorite">Favorite</string>
+    <string name="button_unfavorite">Unfavorite</string>
 </resources>

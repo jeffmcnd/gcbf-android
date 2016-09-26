@@ -9,6 +9,7 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.example.jeffmcnd.myapp.Constants;
 import com.example.jeffmcnd.myapp.GcbfService;
 import com.example.jeffmcnd.myapp.MainActivity;
 import com.example.jeffmcnd.myapp.R;
@@ -20,7 +21,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.realm.Realm;
-import io.realm.RealmConfiguration;
 import io.realm.RealmResults;
 import okhttp3.OkHttpClient;
 import retrofit2.Call;
@@ -42,7 +42,7 @@ public class CreateAccountActivity extends AppCompatActivity {
         setContentView(R.layout.activity_create_account);
         ButterKnife.bind(this);
 
-        Realm realm = getRealmInstance();
+        Realm realm = Constants.getRealmInstance(this);
         final RealmResults<Account> results = realm.where(Account.class).findAll();
 
         if (results.size() > 0) {
@@ -111,16 +111,9 @@ public class CreateAccountActivity extends AppCompatActivity {
         });
     }
 
-    public Realm getRealmInstance() {
-        RealmConfiguration realmConfig = new RealmConfiguration.Builder(this)
-                                                               .deleteRealmIfMigrationNeeded()
-                                                               .build();
-        Realm.setDefaultConfiguration(realmConfig);
-        return Realm.getDefaultInstance();
-    }
 
     public void saveAccount(Account account) {
-        Realm realm = getRealmInstance();
+        Realm realm = Constants.getRealmInstance(this);
         realm.beginTransaction();
         realm.copyToRealm(account);
         realm.commitTransaction();

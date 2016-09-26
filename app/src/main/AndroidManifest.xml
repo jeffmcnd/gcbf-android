@@ -31,7 +31,8 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".UpdateCommentService"/>
+        <service android:name=".service.UpdateCommentService"/>
+        <service android:name=".service.UpdateFavoriteService"/>
     </application>
 
 </manifest>
